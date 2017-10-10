@@ -12,3 +12,5 @@ using consensus queries.
       -o <filename> where to write scores (can be combined with -top)
       -n <int> consensus size; #known actives used to create query (optional; default=all molecules in query file)
       -top <int> how many top scoring molecules to write out (optional; default=all; must be combined with -o)
+
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1006728.svg)](https://doi.org/10.5281/zenodo.1006728)
