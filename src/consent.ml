@@ -12,6 +12,22 @@ module StringSet = BatSet.Make(BatString)
 module TopN = Top_keeper
 module Utls = MyUtils
 
+module SL = struct
+  type t = string * float * int * bool
+  let get_score (_, s, _, _) = s
+  let get_label (_, _, _, l) = l
+end
+
+module BEDROC = MakeROC.Make (SL)
+
+module Vpt_point =
+struct
+  type t = Fp.t
+  let dist = Score.fp_tanimoto_dist
+end
+
+module Vpt = Vp_tree.Make(Vpt_point)
+
 (* useful names to constants *)
 let output_all_scores = -1
 let use_all_actives = -1
@@ -139,6 +155,7 @@ type name2cluster = (string, int) Hashtbl.t
 type curve =
   | AUC of cons_id * float
   | PM of cons_id * float
+  | BEDROC of cons_id * float
   | Accum_actives of cons_id * float list
   | Accum_activity of cons_id * Score_label.t list * Mol.t list
   | Chemical_diversity of cons_id * Score_label.t list * name2cluster
@@ -146,6 +163,7 @@ type curve =
 type merged_curve =
   | AUC of cons_id * float list
   | PM of cons_id * float list
+  | BEDROC of cons_id * float list
   | Accum_actives of cons_id * float list
   | Accum_activity of cons_id * float list
   | Chemical_diversity of cons_id * float list
@@ -153,6 +171,7 @@ type merged_curve =
 let get_cid: curve -> cons_id = function
   | AUC (cid, _)
   | PM (cid, _)
+  | BEDROC (cid, _)
   | Accum_actives (cid, _)
   | Accum_activity (cid, _, _)
   | Chemical_diversity (cid, _, _) -> cid
@@ -160,6 +179,7 @@ let get_cid: curve -> cons_id = function
 let get_floats: curve -> float list = function
   | AUC (_, auc) -> [auc]
   | PM (_, pm) -> [pm]
+  | BEDROC (_, br) -> [br]
   | Accum_actives (_, floats) -> floats
   | Accum_activity (_, score_labels, mols) ->
     compute_cumulated_activity score_labels mols
@@ -182,11 +202,13 @@ let similar_curves (lhs: curve) (rhs: curve): bool =
   match lhs, rhs with
   | AUC _, AUC _
   | PM _, PM _
+  | BEDROC _, BEDROC _
   | Accum_actives _, Accum_actives _
   | Accum_activity _, Accum_activity _
   | Chemical_diversity _, Chemical_diversity _ -> (get_cid lhs) = (get_cid rhs)
   | AUC _, _
   | PM _, _
+  | BEDROC _, _
   | Accum_actives _, _
   | Accum_activity _, _
   | Chemical_diversity _, _ -> false
@@ -208,6 +230,8 @@ let merge_curves (grouped_curves: curve list): merged_curve =
     AUC (cid, L.concat float_lists)
   | PM (cid, _) :: _ ->
     PM (cid, L.concat float_lists)
+  | BEDROC (cid, _) :: _ ->
+    BEDROC (cid, L.concat float_lists)
   | Accum_actives (cid, _) :: _ ->
     Accum_actives (cid, L.nfmedian float_lists)
   | Accum_activity (cid, _, _) :: _ ->
@@ -231,6 +255,12 @@ let output_curves
             | _ -> ()
           in
           ("pm", cid, pm)
+        | BEDROC (cid, br) ->
+          let () = match br with
+            | [x] -> Log.info "BEDROC: %.3f" x
+            | _ -> ()
+          in
+          ("bedroc", cid, br)
         | Accum_actives (cid, floats) -> ("cum", cid, floats)
         | Accum_activity (cid, floats) -> ("cum_act", cid, floats)
         | Chemical_diversity (cid, floats) -> ("chem_div", cid, floats)
@@ -277,10 +307,12 @@ let single_query
       List.map (fun q ->
           let score_labels = List.map (score_fun q) candidates in
           let auc, cum_curve = ROC.auc score_labels in
+          let bedroc = BEDROC.bedroc_auc score_labels in
           let pm = ROC.power_metric !Flags.pm_percent score_labels in
           let avg_cum_curve = L.map float cum_curve in
           (AUC (cons_id, auc): curve) ::
           PM (cons_id, pm) ::
+          BEDROC (cons_id, bedroc) ::
           Accum_actives (cons_id, avg_cum_curve) ::
           Accum_activity (cons_id, score_labels, all_actives) ::
           [Chemical_diversity (cons_id, score_labels, name2cluster)]
@@ -307,19 +339,19 @@ let oppo_scorer
   let label = Mol.is_active cand in
   (cand_name, score, no_index, label)
 
-let index_queries (fprints: Fp.t list): Fp.t Vp_tree.t =
+let index_queries (fprints: Fp.t list): Vpt.t =
   assert(!Flags.curr_score = Flags.Tanimoto);
-  Vp_tree.create Score.fp_tanimoto_dist fprints
+  Vpt.create fprints
 
 let fast_oppo_scorer
     (tap_fun: Mol.t -> unit)
-    (vpt: Fp.t Vp_tree.t)
+    (vpt: Vpt.t)
     (cand: Mol.t): Score_label.t =
   tap_fun cand;
   let cand_name = Mol.get_name cand in
   let cand_fp = Mol.get_fp cand in
   let nearest_tdist, nearest_fp =
-    Vp_tree.nearest_neighbor Score.fp_tanimoto_dist cand_fp vpt in
+    Vpt.nearest_neighbor cand_fp vpt in
   let score = 1.0 -. nearest_tdist in
   let label = Mol.is_active cand in
   (cand_name, score, no_index, label)
@@ -565,7 +597,8 @@ let main () =
   let usage_message =
     sprintf
       "usage:\n%s -s %s \
-       -q queries.{sdf|mol2|csv|ecfp4} -db candidates.{sdf|mol2|csv|ecfp4}\n"
+       -q queries.{sdf|mol2|csv|ecfp4|maccs|pubc} \
+       -db candidates.{sdf|mol2|csv|ecfp4|maccs|pubc}\n"
       Sys.argv.(0) strategies_str in
   let argc = Array.length Sys.argv in
   if argc = 1 then
