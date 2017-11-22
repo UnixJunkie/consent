@@ -1,0 +1,24 @@
+I - Get opam:
+=============
+
+Cf. https://opam.ocaml.org/doc/Install.html
+
+II - Install OCaml via opam:
+============================
+
+opam init
+opam update
+opam switch 4.05.0
+eval `opam config env`
+
+III - Get the source and install all dependencies:
+==================================================
+
+git clone https://github.com/UnixJunkie/consent.git
+cd consent
+opam pin add consent $PWD
+
+IV - Compile:
+=============
+
+make
