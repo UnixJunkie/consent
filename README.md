@@ -21,6 +21,9 @@ using consensus queries.
 
 # II) Usage recommendation
 
+Please cite the corresponding paper in case you use this software and publish
+about your results.
+
 The opportunist consensus policy (-s oppo) is recommended.
 It works well with any fingerprint and is usually the best performing
 method.
