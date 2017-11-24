@@ -2,13 +2,13 @@
 Chemoinformatics software for Ligand-Based Virtual Screening (LBVS)
 using consensus queries.
 
-# Command line help
+# I) Command line help
 
     ./consent -s {sing|oppo|opti|real|know}
               -q queries.{sdf|mol2|csv|ecfp4}
               -db candidates.{sdf|mol2|csv|ecfp4}
 
-      -s <strat> consensus strategy {sing|oppo|opti|real|know} (mandatory)
+      -s <pol> consensus policy {sing|oppo|opti|real|know} (mandatory)
       -q <filename> queries file (known actives; mandatory)
       -db <filename> database to rank order (mandatory)
       -o <filename> where to write scores (can be combined with -top)
@@ -19,7 +19,7 @@ using consensus queries.
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1006728.svg)](https://doi.org/10.5281/zenodo.1006728)
 
-# Usage recommendation
+# II) Usage recommendation
 
 The opportunist consensus policy (-s oppo) is recommended.
 It works well with any fingerprint and is usually the best performing
@@ -36,14 +36,39 @@ However, if you really need to go faster, here are some recommendations:
 
 - UMOP2D (unfolded MOLPRINT2D; uncounted): same as for ECFP4, use -s opti.
 
-# How to encode your molecules
+# III) How to encode your molecules
 
-FBR: TODO; MACCS, ECFP4, UMOP2D
+First, we need some SDF and MOL2 files. The obabel command is provided by the Open Babel package
+(http://openbabel.org).
 
-# How to create a consensus query
+    obabel data/ARm_actives.smi -O data/ARm_actives.sdf
+    obabel data/ARm_inactives.smi -O data/ARm_inactives.sdf
+    obabel data/ARm_actives.smi -O data/ARm_actives.mol2
+    obabel data/ARm_inactives.smi -O data/ARm_inactives.mol2
+    cat data/ARm_actives.mol2 data/ARm_inactives.mol2 > data/ARm_database.mol2
 
-FBR: TODO; MACCS, ECFP4, UMOP2D
+## with the MACCS fingerprint
 
-# How to query with a consensus query
+    ./src/ob_maccs data/ARm_actives.sdf > data/ARm_actives.maccs
+    ./src/ob_maccs data/ARm_inactives.sdf > data/ARm_inactives.maccs
+    cat data/ARm_actives.maccs data/ARm_inactives.maccs > data/ARm_database.maccs
 
-FBR: TODO; MACCS, ECFP4, UMOP2D
+## with the ECFP4 fingerprint
+
+    ./bin/ecfp4.py data/ARm_actives.sdf > data/ARm_actives.ecfp4
+    ./bin/ecfp4.py data/ARm_inactives.sdf > data/ARm_inactives.ecfp4
+    cat data/ARm_actives.ecfp4 data/ARm_inactives.ecfp4 > data/ARm_database.ecfp4
+
+## with the UMOP2D fingerprint
+
+    ./mop2d_indexer -i data/ARm_database.mol2 > data/ARm_database.idx
+    ./mop2d_encoder -idx data/ARm_database.idx -i data/ARm_database.mol2 -o data/ARm_database.mop2d
+
+# IV) How to query with a consensus query and a consensus policy
+
+    # example with ECFP4 fingerprints and 20 actives
+    head -20 data/ARm_actives.ecfp4 > data/ARm_query_20.ecfp4
+    # recommended way; AUC ~= 0.60
+    consent -s oppo -q data/ARm_query_20.ecfp4 -db data/ARm_database.ecfp4 -o scores.txt
+    # faster, but still with good performance in many cases; AUC ~= 0.61
+    consent -s opti -q data/ARm_query_20.ecfp4 -db data/ARm_database.ecfp4 -o scores.txt
