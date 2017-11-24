@@ -39,7 +39,7 @@ However, if you really need to go faster, here are some recommendations:
 # III) How to encode your molecules
 
 First, we need some SDF and MOL2 files. The obabel command is provided by the Open Babel package
-(http://openbabel.org).
+(cf. http://openbabel.org).
 
     obabel data/ARm_actives.smi -O data/ARm_actives.sdf
     obabel data/ARm_inactives.smi -O data/ARm_inactives.sdf
@@ -47,19 +47,19 @@ First, we need some SDF and MOL2 files. The obabel command is provided by the Op
     obabel data/ARm_inactives.smi -O data/ARm_inactives.mol2
     cat data/ARm_actives.mol2 data/ARm_inactives.mol2 > data/ARm_database.mol2
 
-## with the MACCS fingerprint
+## With the MACCS fingerprint
 
     ./src/ob_maccs data/ARm_actives.sdf > data/ARm_actives.maccs
     ./src/ob_maccs data/ARm_inactives.sdf > data/ARm_inactives.maccs
     cat data/ARm_actives.maccs data/ARm_inactives.maccs > data/ARm_database.maccs
 
-## with the ECFP4 fingerprint
+## With the ECFP4 fingerprint
 
     ./bin/ecfp4.py data/ARm_actives.sdf > data/ARm_actives.ecfp4
     ./bin/ecfp4.py data/ARm_inactives.sdf > data/ARm_inactives.ecfp4
     cat data/ARm_actives.ecfp4 data/ARm_inactives.ecfp4 > data/ARm_database.ecfp4
 
-## with the UMOP2D fingerprint
+## With the UMOP2D fingerprint
 
     ./mop2d_indexer -i data/ARm_database.mol2 > data/ARm_database.idx
     ./mop2d_encoder -idx data/ARm_database.idx -i data/ARm_database.mol2 -o data/ARm_database.mop2d
