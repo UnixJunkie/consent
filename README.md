@@ -21,8 +21,7 @@ using consensus queries.
 
 # II) Usage recommendation
 
-Please cite the corresponding paper in case you use this software and publish
-about your results.
+Please cite the corresponding paper (https://doi.org/10.1186/s13321-017-0248-5) in case you use this software and publish about your results (Consensus queries in ligand-based virtual screening experiments. F. Berenger, O. Vu and J., Meiler. Journal of Cheminformatics, November 2017).
 
 The opportunist consensus policy (-s oppo) is recommended.
 It works well with any fingerprint and is usually the best performing
