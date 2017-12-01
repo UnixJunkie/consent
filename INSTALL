@@ -16,7 +16,8 @@ III - Get the source and install all dependencies:
 
 git clone https://github.com/UnixJunkie/consent.git
 cd consent
-opam pin add consent $PWD
+opam pin add -n consent $PWD
+opam depext -i consent
 
 IV - Compile:
 =============
