@@ -105,7 +105,7 @@ let file_format_of_filename (fn: string): file_format =
 
 (* find the ob_maccs exe *)
 let do_we_have_ob_maccs (): string option =
-  Utls.find_command "ob_maccs" "OB_MACCS_EXE"
+  Utls.find_command "consent_ob_maccs" "OB_MACCS_EXE"
 
 (* find ecfp4.py script *)
 let do_we_have_ecfp4_py (): string option =
