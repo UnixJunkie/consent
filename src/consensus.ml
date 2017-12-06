@@ -327,3 +327,5 @@ let create
       | Fp.MOP2D _ -> assert(false)
       | Fp.MACCS _ -> Knowledgeable_maccs (queries, a)
       | Fp.ECFP4 _ -> Knowledgeable_ecfp4 (queries, a)
+      | Fp.PUBCH _ ->
+        failwith "Consensus.create: knowledgeable not supported for PUBCH"
