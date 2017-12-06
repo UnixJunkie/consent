@@ -17,6 +17,7 @@ depends: [
   "batteries"
   "bitv" {>= "1.2"}
   "camlzip"
+  "conf-openbabel"
   "conf-python-2-7"
   "conf-rdkit"
   "cpm"
