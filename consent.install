@@ -2,6 +2,6 @@ bin: [
   "consent" {"consent"}
   "src/consent_ob_maccs" {"consent_of_maccs"}
   "bin/consent_ecfp4.py" {"consent_ecfp4.py"}
-  "src/consent_mop2di" {"consent_mop2di"}
-  "src/consent_mop2de" {"consent_mop2de"}
+  "consent_mop2di" {"consent_mop2di"}
+  "consent_mop2de" {"consent_mop2de"}
 ]
