@@ -8,7 +8,7 @@ config: consent.obuild
 
 clean:
 	obuild clean
-	\rm -f *.eps *.scores *.toplot *.CDF *.ccurve src/ob_maccs \
+	\rm -f *.eps *.scores *.toplot *.CDF *.ccurve src/consent_ob_maccs \
 	       *.{002,003,005,010,020}.txt
 
 edit:
