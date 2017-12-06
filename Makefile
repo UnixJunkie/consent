@@ -9,7 +9,7 @@ config: consent.obuild
 clean:
 	obuild clean
 	\rm -f *.eps *.scores *.toplot *.CDF *.ccurve src/consent_ob_maccs \
-	       *.{002,003,005,010,020}.txt
+	       *.{002,003,005,010,020}.txt qtest.targets.log
 
 edit:
 	emacs src/*.ml TODO commands.sh &
