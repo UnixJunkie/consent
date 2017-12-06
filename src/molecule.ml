@@ -44,6 +44,11 @@ let of_ecfp4_string (index: int) (s: string): t =
       create index name ic50 (Fp.of_ecfp4_string fp_string)
     )
 
+let of_pubch_string (index: int) (s: string): t =
+  Scanf.sscanf s "%s@,%f,%s" (fun name ic50 fp_string ->
+      create index name ic50 (Fp.of_pubch_string fp_string)
+    )
+
 let of_mop2d_string (index: int) (s: string): t =
   Scanf.sscanf s "%s@,%f,%s" (fun name ic50 fp_string ->
       create index name ic50 (Fp.of_mop2d_string fp_string)
@@ -82,6 +87,7 @@ type file_format = SDF
                  | SMI
                  | CSV (* a csv file I crafted myself (with MACCS Fps) *)
                  | ECFP4 (* a csv file I crafted myself (with ECFP4 Fps) *)
+                 | PUBCH (* a csv file I crafted myself (with PUBCH Fps) *)
                  | MOP2D (* a csv file I crafted myself (with MOP2D Fps) *)
                  | BIN (* marshalling output format *)
 
@@ -93,6 +99,7 @@ let file_format_of_filename (fn: string): file_format =
   else if BatString.ends_with fn ".csv" ||
           BatString.ends_with fn ".maccs" then CSV
   else if BatString.ends_with fn ".ecfp4" then ECFP4
+  else if BatString.ends_with fn ".pubc" then PUBCH
   else if BatString.ends_with fn ".mop2d" then MOP2D
   else failwith ("unsupported file format: " ^ fn)
 
@@ -134,6 +141,8 @@ let mol_reader_of_filename (fn: string) =
     (fun input -> of_maccs_string no_index (input_line input))
   | ECFP4 ->
     (fun input -> of_ecfp4_string no_index (input_line input))
+  | PUBCH ->
+    (fun input -> of_pubch_string no_index (input_line input))
   | MOP2D ->
     if !Flags.curr_fingerprint <> Flags.MOP2D then
       Log.debug "mol_reader_of_filename: Flags.curr_fingerprint <> MOP2D";
@@ -171,7 +180,7 @@ let from_some_file (fmt: file_format) (fn: string): t list =
   let index = ref 0 in
   let res = ref [] in
   begin match fmt with
-    | CSV | ECFP4 | MOP2D | SDF ->
+    | CSV | ECFP4 | PUBCH | MOP2D | SDF ->
       let mol_reader = mol_reader_of_filename fn in
       let out_fn, mol_tap =
         let bin_out_fn = fn ^ ".bin" in
@@ -234,6 +243,7 @@ let from_file (fn: string): t list =
   match do_we_have_ob_maccs (), file_format_of_filename fn with
   | _, BIN -> from_some_file BIN fn
   | _, ECFP4 -> from_some_file ECFP4 fn
+  | _, PUBCH -> from_some_file PUBCH fn
   | _, MOP2D -> from_some_file MOP2D fn
   | None, SDF -> from_some_file SDF fn
   | None, MOL2 -> from_some_file MOL2 fn
@@ -275,6 +285,7 @@ let from_fp_file (fn: string): t list =
   match file_format_of_filename fn with
   | BIN ->   from_some_file BIN   fn
   | ECFP4 -> from_some_file ECFP4 fn
+  | PUBCH -> from_some_file PUBCH fn
   | MOP2D -> from_some_file MOP2D fn
   | CSV   -> from_some_file CSV   fn
   | _ -> failwith ("from_fp_file: unsupported: " ^ fn)

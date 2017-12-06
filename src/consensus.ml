@@ -305,6 +305,8 @@ let create
        let a = bit_frequency queries in
        if verbose then debug_freq_cons a;
        Realist_maccs (queries, a)
+     | Fp.PUBCH _ ->
+       failwith "Consensus.create: realist not supported for PUBCH"
      | Fp.MOP2D _ ->
        let a = int_frequency queries in
        Realist_mop2d (queries, a)

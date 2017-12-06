@@ -28,6 +28,7 @@ let fp_tanimoto_score (query: Fp.t) (cand: Fp.t): float =
     count_set_bits (Bitv.bw_or  fpA fpB) in
   match query with
   | Fp.MACCS _
+  | Fp.PUBCH _
   | Fp.ECFP4 _ -> bitv_tanimoto (Fp.get_bits query) (Fp.get_bits cand)
   | Fp.MOP2D _ -> tanimoto_intset query cand
 
