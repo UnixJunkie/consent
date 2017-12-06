@@ -2,6 +2,8 @@
 Chemoinformatics software for Ligand-Based Virtual Screening (LBVS)
 using consensus queries.
 
+Cf. the INSTALL file for instructions on how to install consent.
+
 # I) Command line help
 
     ./consent -s {sing|oppo|opti|real|know}
@@ -51,20 +53,20 @@ First, we need some SDF and MOL2 files. The obabel command is provided by the Op
 
 ## With the MACCS fingerprint
 
-    ./src/ob_maccs data/ARm_actives.sdf > data/ARm_actives.maccs
-    ./src/ob_maccs data/ARm_inactives.sdf > data/ARm_inactives.maccs
+    consent_ob_maccs data/ARm_actives.sdf > data/ARm_actives.maccs
+    consent_ob_maccs data/ARm_inactives.sdf > data/ARm_inactives.maccs
     cat data/ARm_actives.maccs data/ARm_inactives.maccs > data/ARm_database.maccs
 
 ## With the ECFP4 fingerprint
 
-    ./bin/ecfp4.py data/ARm_actives.sdf > data/ARm_actives.ecfp4
-    ./bin/ecfp4.py data/ARm_inactives.sdf > data/ARm_inactives.ecfp4
+    consent_ecfp4.py data/ARm_actives.sdf > data/ARm_actives.ecfp4
+    consent_ecfp4.py data/ARm_inactives.sdf > data/ARm_inactives.ecfp4
     cat data/ARm_actives.ecfp4 data/ARm_inactives.ecfp4 > data/ARm_database.ecfp4
 
 ## With the UMOP2D fingerprint
 
-    ./mop2d_indexer -i data/ARm_database.mol2 > data/ARm_database.idx
-    ./mop2d_encoder -idx data/ARm_database.idx -i data/ARm_database.mol2 -o data/ARm_database.mop2d
+    consent_mop2di -i data/ARm_database.mol2 > data/ARm_database.idx
+    consent_mop2de -idx data/ARm_database.idx -i data/ARm_database.mol2 -o data/ARm_database.mop2d
 
 # IV) How to query with a consensus query and a consensus policy
 
