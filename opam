@@ -1,38 +1,29 @@
-opam-version: "1.2"
+opam-version: "2.0"
 name: "consent"
 authors: "Francois BERENGER <ligand@free.fr>"
 maintainer: "ligand@free.fr"
 homepage: "https://github.com/UnixJunkie/consent"
 bug-reports: "https://github.com/UnixJunkie/consent/issues"
-dev-repo: "https://github.com/UnixJunkie/consent.git"
+dev-repo: "git+https://github.com/UnixJunkie/consent.git"
 license: "GPL"
 build: [
-  [make]
-]
-install: [
-  ["cp" "consent" "src/ob_maccs" "bin/ecfp4.py"
-        "mop2d_encoder" "mop2d_indexer" "sdf_split" "sdf_get"
-        bin]
-]
-remove: [
-  ["rm" "-f" "%{bin}%/consent"
-        "%{bin}%/ob_maccs"
-        "%{bin}%/ecfp4.py"
-        "%{bin}%/mop2d_encoder"
-        "%{bin}%/mop2d_indexer"
-        "%{bin}%/sdf_split"
-        "%{bin}%/sdf_get"]
+  [make "obmaccs"]
+  ["obuild" "configure"]
+  ["obuild" "build" "exe-consent"]
+  ["obuild" "build" "exe-consent_mop2di"]
+  ["obuild" "build" "exe-consent_mop2de"]
 ]
 depends: [
-  "obuild" {build}
   "batteries"
   "bitv" {>= "1.2"}
-  "parmap"
-  "dolog"
   "camlzip"
-  "qcheck"
-  "minivpt"
   "conf-python-2-7"
   "conf-rdkit"
   "cpm"
+  "dolog"
+  "minivpt"
+  "obuild" {build}
+  "parmap"
+  "qcheck"
+  "qtest" {test}
 ]
