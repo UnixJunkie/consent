@@ -78,8 +78,8 @@ let from_chan (input: Gzip.in_channel): t =
   let buffer = Bytes.create (Marshal.total_size header 0) in
   Gzip.really_input input buffer Marshal.header_size
     (Marshal.data_size header 0);
-  String.unsafe_blit header 0 buffer 0 Marshal.header_size;
-  Marshal.from_string buffer 0
+  Bytes.unsafe_blit header 0 buffer 0 Marshal.header_size;
+  Marshal.from_bytes buffer 0
 
 (* supported file formats *)
 type file_format = SDF
