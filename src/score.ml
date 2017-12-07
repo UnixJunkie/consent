@@ -1,6 +1,7 @@
 
 module Log = Log.Make(struct let section = "Scor" end)
 
+module A = BatArray
 module Fp = Fingerprint
 module L = BatList
 
@@ -51,7 +52,7 @@ let tanimoto_et_al (xs: float array) (ys: float array): float * float * float =
   let xys = ref 0.0 in
   let x2s = ref 0.0 in
   let y2s = ref 0.0 in
-  Array.iter2 (fun x y ->
+  A.iter2 (fun x y ->
       let xy = x *. y in
       let x2 = x *. x in
       let y2 = y *. y in
@@ -74,7 +75,7 @@ let array_tversky (alpha: float) (xs: float array) (ys: float array): float =
 let tanimoto (cons: float array) (cand: Fp.t): float =
   let tanimoto_bits (cons: float array) (cand: Bitv.t): float =
     let res = MyUtils.bitv_to_floats cand in
-    assert(Array.length cons = Array.length res);
+    assert(A.length cons = A.length res);
     array_tanimoto cons res in
   tanimoto_bits cons (Fp.get_bits cand)
 
@@ -96,7 +97,7 @@ let tanimoto_intmap (cons: float IntMap.t) (cand': Fp.t): float =
 let tversky (alpha: float) (cons: float array) (cand: Fp.t): float =
   let tversky_bits (cons: float array) (cand: Bitv.t): float =
     let res = MyUtils.bitv_to_floats cand in
-    assert(Array.length cons = Array.length res);
+    assert(A.length cons = A.length res);
     array_tversky alpha cons res in
   tversky_bits cons (Fp.get_bits cand)
 
@@ -111,10 +112,10 @@ let get_score (flag: Flags.score): (float array -> Fp.t -> float) =
    Knowledgeable consensus) than Tanimoto *)
 let agreement (cons: float array) (cand: Fp.t): float =
   let agreement_bits (cons: float array) (cand: Bitv.t): float =
-    assert(Array.length cons = Bitv.length cand);
+    assert(A.length cons = Bitv.length cand);
     Bitv.foldi_left
       (fun acc i bit ->
-         let p = Array.unsafe_get cons i in
+         let p = A.unsafe_get cons i in
          let delta = if bit then p else 1.0 -. p in
          acc +. delta
       ) 0.0 cand in
