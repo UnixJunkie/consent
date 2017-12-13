@@ -1,5 +1,5 @@
 opam-version: "2.0"
-name: "consent"
+name: "lbvs_consent"
 authors: "Francois BERENGER <ligand@free.fr>"
 maintainer: "ligand@free.fr"
 homepage: "https://github.com/UnixJunkie/consent"
@@ -9,9 +9,9 @@ license: "GPL"
 build: [
   [make "obmaccs"]
   ["obuild" "configure"]
-  ["obuild" "build" "exe-consent"]
-  ["obuild" "build" "exe-consent_mop2di"]
-  ["obuild" "build" "exe-consent_mop2de"]
+  ["obuild" "build" "exe-lbvs_consent"]
+  ["obuild" "build" "exe-lbvs_consent_mop2di"]
+  ["obuild" "build" "exe-lbvs_consent_mop2de"]
 ]
 depends: [
   "batteries"
@@ -26,6 +26,6 @@ depends: [
   "minivpt"
   "obuild" {build}
   "parmap"
-  "qcheck" {test}
-  "qtest" {test}
+  "qcheck" {build}
+  "qtest" {build}
 ]

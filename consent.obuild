@@ -5,7 +5,7 @@ License:    BSD
 Synopsis:   Ligand-based virtual screening tool for consensus queries
 obuild-ver: 1
 
-Executable consent
+Executable lbvs_consent
   oflags:       -warn-error +26 -bin-annot
   Path:         src
   BuildDepends: batteries, dolog, bitv, parmap, str, zip, cpm, minivpt
@@ -18,14 +18,14 @@ Executable unit_tests
   build-deps: batteries, dolog, bitv, parmap, str, zip, cpm, minivpt, oUnit, qcheck
 
 # MOP2D encoder
-Executable consent_mop2de
+Executable lbvs_consent_mop2de
   oflags:     -warn-error +26
   Path:       src
   main-is:    mop2d_encoder.ml
   build-deps: batteries, dolog, bitv, parmap, str, zip, cpm, minivpt, oUnit, qcheck
 
 # MOP2D decoder
-Executable consent_mop2di
+Executable lbvs_consent_mop2di
   oflags:     -warn-error +26
   Path:       src
   main-is:    mop2d_indexer.ml

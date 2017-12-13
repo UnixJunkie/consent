@@ -8,7 +8,7 @@ config: consent.obuild
 
 clean:
 	obuild clean
-	\rm -f *.eps *.scores *.toplot *.CDF *.ccurve src/consent_ob_maccs \
+	\rm -f *.eps *.scores *.toplot *.CDF *.ccurve src/lbvs_consent_ob_maccs \
 	       *.{002,003,005,010,020}.txt qtest.targets.log
 
 edit:
@@ -18,11 +18,11 @@ obmaccs:
 	cd src; make
 
 install:
-	opam remove consent
-	opam pin -y add consent ${PWD}
+	opam remove lbvs_consent
+	opam pin -y add lbvs_consent ${PWD}
 
 uninstall:
-	opam remove consent
+	opam remove lbvs_consent
 
 reinstall: uninstall install
 

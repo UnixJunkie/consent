@@ -6,9 +6,9 @@ Cf. the INSTALL file for instructions on how to install consent.
 
 # I) Command line help
 
-    ./consent -s {sing|oppo|opti|real|know}
-              -q queries.{sdf|mol2|csv|ecfp4}
-              -db candidates.{sdf|mol2|csv|ecfp4}
+    lbvs_consent -s {sing|oppo|opti|real|know}
+                 -q queries.{sdf|mol2|csv|ecfp4}
+                 -db candidates.{sdf|mol2|csv|ecfp4}
 
       -s <pol> consensus policy {sing|oppo|opti|real|know} (mandatory)
       -q <filename> queries file (known actives; mandatory)
@@ -23,7 +23,10 @@ Cf. the INSTALL file for instructions on how to install consent.
 
 # II) Usage recommendation
 
-Please cite the corresponding paper (https://doi.org/10.1186/s13321-017-0248-5) in case you use this software and publish about your results (Consensus queries in ligand-based virtual screening experiments. F. Berenger, O. Vu and J., Meiler. Journal of Cheminformatics, November 2017).
+Please cite the corresponding paper (https://doi.org/10.1186/s13321-017-0248-5)
+in case you use this software and publish about your results
+(Consensus queries in ligand-based virtual screening experiments.
+F. Berenger, O. Vu and J., Meiler. Journal of Cheminformatics, November 2017).
 
 The opportunist consensus policy (-s oppo) is recommended.
 It works well with any fingerprint and is usually the best performing
@@ -42,7 +45,8 @@ However, if you really need to go faster, here are some recommendations:
 
 # III) How to encode your molecules
 
-First, we need some SDF and MOL2 files. The obabel command is provided by the Open Babel package
+First, we need some SDF and MOL2 files.
+The obabel command is provided by the Open Babel package
 (cf. http://openbabel.org).
 
     obabel data/ARm_actives.smi -O data/ARm_actives.sdf
@@ -53,26 +57,26 @@ First, we need some SDF and MOL2 files. The obabel command is provided by the Op
 
 ## With the MACCS fingerprint
 
-    consent_ob_maccs data/ARm_actives.sdf > data/ARm_actives.maccs
-    consent_ob_maccs data/ARm_inactives.sdf > data/ARm_inactives.maccs
+    lbvs_consent_ob_maccs data/ARm_actives.sdf > data/ARm_actives.maccs
+    lbvs_consent_ob_maccs data/ARm_inactives.sdf > data/ARm_inactives.maccs
     cat data/ARm_actives.maccs data/ARm_inactives.maccs > data/ARm_database.maccs
 
 ## With the ECFP4 fingerprint
 
-    consent_ecfp4.py data/ARm_actives.sdf > data/ARm_actives.ecfp4
-    consent_ecfp4.py data/ARm_inactives.sdf > data/ARm_inactives.ecfp4
+    lbvs_consent_ecfp4.py data/ARm_actives.sdf > data/ARm_actives.ecfp4
+    lbvs_consent_ecfp4.py data/ARm_inactives.sdf > data/ARm_inactives.ecfp4
     cat data/ARm_actives.ecfp4 data/ARm_inactives.ecfp4 > data/ARm_database.ecfp4
 
 ## With the UMOP2D fingerprint
 
-    consent_mop2di -i data/ARm_database.mol2 > data/ARm_database.idx
-    consent_mop2de -idx data/ARm_database.idx -i data/ARm_database.mol2 -o data/ARm_database.mop2d
+    lbvs_consent_mop2di -i data/ARm_database.mol2 > data/ARm_database.idx
+    lbvs_consent_mop2de -idx data/ARm_database.idx -i data/ARm_database.mol2 -o data/ARm_database.mop2d
 
 # IV) How to query with a consensus query and a consensus policy
 
     # example with ECFP4 fingerprints and 20 actives
     head -20 data/ARm_actives.ecfp4 > data/ARm_query_20.ecfp4
     # recommended way; AUC ~= 0.60
-    consent -s oppo -q data/ARm_query_20.ecfp4 -db data/ARm_database.ecfp4 -o scores.txt
+    lbvs_consent -s oppo -q data/ARm_query_20.ecfp4 -db data/ARm_database.ecfp4 -o scores.txt
     # faster, but still with good performance in many cases; AUC ~= 0.61
-    consent -s opti -q data/ARm_query_20.ecfp4 -db data/ARm_database.ecfp4 -o scores.txt
+    lbvs_consent -s opti -q data/ARm_query_20.ecfp4 -db data/ARm_database.ecfp4 -o scores.txt

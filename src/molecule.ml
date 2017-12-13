@@ -105,11 +105,11 @@ let file_format_of_filename (fn: string): file_format =
 
 (* find the ob_maccs exe *)
 let do_we_have_ob_maccs (): string option =
-  Utls.find_command "consent_ob_maccs" "OB_MACCS_EXE"
+  Utls.find_command "lbvs_consent_ob_maccs" "OB_MACCS_EXE"
 
 (* find ecfp4.py script *)
 let do_we_have_ecfp4_py (): string option =
-  Utls.find_command "ecfp4.py" "ECFP4_PY_SCRIPT"
+  Utls.find_command "lbvs_consent_ecfp4.py" "ECFP4_PY_SCRIPT"
 
 let read_and_encode_one (fp: Flags.fingerprint) (encode_cmd: string)
   : in_channel -> t =
