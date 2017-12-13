@@ -11,14 +11,7 @@ opam update
 opam switch 4.05.0
 eval `opam config env`
 
-III - Get the source and install all dependencies:
-==================================================
+III - Compile and install all dependencies:
+===========================================
 
-git clone https://github.com/UnixJunkie/consent.git
-cd consent
-opam pin add -n consent $PWD
-
-IV - Compile:
-=============
-
-opam depext -i consent
+opam depext -i lbvs_consent
