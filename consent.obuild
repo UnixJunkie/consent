@@ -31,6 +31,12 @@ Executable lbvs_consent_mop2di
   main-is:    mop2d_indexer.ml
   build-deps: batteries, dolog, bitv, parmap, str, zip, cpm, minivpt, oUnit, qcheck
 
+Executable sdf_rename
+  oflags:       -warn-error +26 -bin-annot
+  Path:         src
+  BuildDepends: batteries, dolog, bitv, parmap, str, zip, cpm, minivpt, minicli
+  MainIs:       sdf_rename.ml
+
 # Executable sdf_reader
 #   oflags:       -warn-error +26 -bin-annot
 #   Path:         src
