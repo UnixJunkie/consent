@@ -61,8 +61,8 @@ Executable sdf_rename
 #   main-is:    sdf_split.ml
 #   build-deps: batteries, dolog, bitv, parmap, str, zip, cpm, minivpt, oUnit, qcheck
 
-# Executable sdf_get
-#   oflags:     -warn-error +26
-#   Path:       src
-#   main-is:    sdf_get.ml
-#   build-deps: batteries, dolog, bitv, parmap, str, zip, cpm, minivpt, oUnit, qcheck
+Executable sdf_get
+  oflags:     -warn-error +26
+  Path:       src
+  main-is:    sdf_get.ml
+  build-deps: batteries, dolog, bitv, parmap, str, zip, cpm, minivpt, oUnit, qcheck, minicli
