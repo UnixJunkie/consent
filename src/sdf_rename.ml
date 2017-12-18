@@ -21,14 +21,12 @@ let main () =
   MyUtils.with_in_out_file input_fn output_fn (fun input output ->
       try
         while true do
-          let line = input_line input in
-          if line = "XXX" then (* the tag to replace *)
-            let name = List.hd !names in
-            names := List.tl !names;
-            incr count;
-            fprintf output "%s\n" name
-          else
-            fprintf output "%s\n" line
+          let mol = Sdf.read_one input in
+          let _curr_name, rest = BatString.split ~by:"\n" mol in
+          let name = List.hd !names in
+          names := List.tl !names;
+          incr count;
+          fprintf output "%s\n%s" name rest
         done
       with End_of_file ->
         Log.info "read %d molecules" !count
