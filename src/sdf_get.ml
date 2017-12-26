@@ -13,15 +13,17 @@ let main () =
   let argc, args = CLI.init () in
   if argc = 1 then
     (eprintf "usage:\n\
-              %s -i molecules.sdf [-p] \
+              %s -i molecules.sdf [-p] [-o out.sdf]\
               {-names \"mol1,mol2,mol10\"|-n names_file}\n\
               -i <file.sdf>: where to read molecules from\n\
+              -o <file.sdf>: where to write molecules to (def=stdout)\n\
               -names name1,name2,name3: name of molecules to get\n\
               -n <names_file>: names of molecules to get, one per line\n\
               -p: preserve (names) order when writting molecules out\n"
        Sys.argv.(0);
      exit 1);
   let input_fn = CLI.get_string ["-i"] args in
+  let output_fn = CLI.get_string_def ["-o"] args "/dev/stdout" in
   let names = match CLI.get_string_opt ["-names"] args with
     | None -> ""
     | Some ns -> ns in
@@ -50,7 +52,7 @@ let main () =
   let rank2mol = Ht.create nb_names in
   let ok_names = StringSet.of_list selected_names in
   let count = ref 0 in
-  MyUtils.with_in_file input_fn (fun input ->
+  MyUtils.with_in_out_file input_fn output_fn (fun input output ->
       try
         while true do
           let m = Sdf.read_one input in
@@ -60,13 +62,14 @@ let main () =
                let rank = Ht.find name2rank name in
                Ht.add rank2mol rank m
              else
-               Printf.printf "%s" m;
+               fprintf output "%s" m;
              incr count)
         done
       with End_of_file ->
         (if preserve_order then
            for rank = 0 to nb_names - 1; do
-             Printf.printf "%s" (Ht.find rank2mol rank)
+             try fprintf output "%s" (Ht.find rank2mol rank)
+             with Not_found -> Log.error "mol at rank %d not found" rank
            done;
          Printf.eprintf "found %d\n" !count)
     )
