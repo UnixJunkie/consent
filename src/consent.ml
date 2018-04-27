@@ -18,7 +18,7 @@ module SL = struct
   let get_label (_, _, _, l) = l
 end
 
-module BEDROC = MakeROC.Make (SL)
+module BEDROC = Cpm.MakeROC.Make (SL)
 
 module Vpt_point =
 struct
