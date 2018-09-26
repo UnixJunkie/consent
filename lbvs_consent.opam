@@ -12,7 +12,7 @@ build: [
 ]
 install: [
   ["cp" "bin/lbvs_consent_ecfp4.py" "%{bin}%/lbvs_consent_ecfp4.py"]
-  ["cp" "src/ob_maccs" "%{bin}%/lbvs_consent_ob_maccs"]
+  ["cp" "src/lbvs_consent_ob_maccs" "%{bin}%/lbvs_consent_ob_maccs"]
 ]
 remove: [
   ["rm" "-f" "%{bin}%/lbvs_consent_ecfp4.py"
