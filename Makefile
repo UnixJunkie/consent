@@ -1,4 +1,4 @@
-.PHONY: install uninstall reinstall plotsNR.pdf plotsVU.pdf
+.PHONY: install uninstall reinstall
 
 build: obmaccs
 	jbuilder build @install
