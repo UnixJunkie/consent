@@ -11,7 +11,7 @@ build: [
   ["jbuilder" "build" "-p" name "-j" jobs]
 ]
 install: [
-  ["cp" "bin/ecfp4.py" "%{bin}%/lbvs_consent_ecfp4.py"]
+  ["cp" "bin/lbvs_consent_ecfp4.py" "%{bin}%/lbvs_consent_ecfp4.py"]
   ["cp" "src/ob_maccs" "%{bin}%/lbvs_consent_ob_maccs"]
 ]
 remove: [
