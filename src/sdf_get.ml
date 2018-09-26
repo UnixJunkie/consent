@@ -2,76 +2,67 @@
 (* extract SDF molecules with given names *)
 
 open Printf
+open Lbvs_consent
 
-module Ht = Hashtbl
-module StringSet = BatSet.String
+module DB = Dokeysto_camltc.Db_camltc.RW
+
+let db_name_of fn =
+  fn ^ ".db"
 
 let main () =
   Log.set_log_level Log.INFO;
+  Log.set_output stderr;
   Log.color_on ();
-  (* options *)
-  let argc, args = CLI.init () in
+  (* mandatory options *)
+  let input_fn = ref "" in
+  let names = ref "" in
+  let usage_message =
+    sprintf "usage:\n%s -i molecules.sdf -names \"mol1,mol2,mol10\""
+      Sys.argv.(0) in
+  let argc = Array.length Sys.argv in
   if argc = 1 then
-    (eprintf "usage:\n\
-              %s -i molecules.sdf [-p] [-o out.sdf]\
-              {-names \"mol1,mol2,mol10\"|-n names_file}\n\
-              -i <file.sdf>: where to read molecules from\n\
-              -o <file.sdf>: where to write molecules to (def=stdout)\n\
-              -names name1,name2,name3: name of molecules to get\n\
-              -n <names_file>: names of molecules to get, one per line\n\
-              -p: preserve (names) order when writting molecules out\n"
-       Sys.argv.(0);
-     exit 1);
-  let input_fn = CLI.get_string ["-i"] args in
-  let output_fn = CLI.get_string_def ["-o"] args "/dev/stdout" in
-  let names = match CLI.get_string_opt ["-names"] args with
-    | None -> ""
-    | Some ns -> ns in
-  let names_fn = match CLI.get_string_opt ["-n"] args with
-    | None -> ""
-    | Some fn -> fn in
-  let preserve_order = CLI.get_set_bool ["-p"] args in
-  let selected_names =
-    (* -names and -n are incompatible but one is mandatory *)
-    assert(names <> "" || names_fn <> "");
-    assert(names = "" || names_fn = "");
-    if names <> "" then
-      BatString.nsplit ~by:"," names
-    else if names_fn <> "" then
-      MyUtils.lines_of_file names_fn
+    (Log.fatal "%s" usage_message;
+     exit 1)
+  else
+    Arg.parse
+      ["-i", Arg.Set_string input_fn,
+       "<filename> where to read molecules from";
+       "-names", Arg.Set_string names,
+       "name1[,name2[,...]] which molecules to get"]
+      (fun arg -> raise (Arg.Bad ("Bad argument: " ^ arg)))
+      usage_message;
+  (* is there a DB already? *)
+  let db_fn = db_name_of !input_fn in
+  let db_exists, db =
+    if Sys.file_exists db_fn then
+      let () = Log.info "creating %s" db_fn in
+      (true, DB.open_existing db_fn)
     else
-      assert(false) in
-  let name2rank =
-    let res = Ht.create 11 in
-    List.iteri (fun i name ->
-        assert(not (Ht.mem res name));
-        Ht.add res name i
-      ) selected_names;
-    res in
-  let nb_names = Ht.length name2rank in
-  let rank2mol = Ht.create nb_names in
-  let ok_names = StringSet.of_list selected_names in
+      let () = Log.info "opening %s" db_fn in
+      (false, DB.create db_fn) in
   let count = ref 0 in
-  MyUtils.with_in_out_file input_fn output_fn (fun input output ->
+  if not db_exists then
+    MyUtils.with_in_file !input_fn (fun input ->
+        try
+          while true do
+            let m = Sdf.read_one input in
+            let name = Sdf.get_fst_line m in
+            DB.add db name m;
+            incr count;
+            if (!count mod 10_000) = 0 then
+              eprintf "read %d\r%!" !count;
+          done
+        with End_of_file ->
+          DB.sync db
+      );
+  let names = BatString.nsplit !names ~by:"," in
+  List.iter (fun name ->
       try
-        while true do
-          let m = Sdf.read_one input in
-          let name, _rest = BatString.split m ~by:"\n" in
-          if StringSet.mem name ok_names then
-            (if preserve_order then
-               let rank = Ht.find name2rank name in
-               Ht.add rank2mol rank m
-             else
-               fprintf output "%s" m;
-             incr count)
-        done
-      with End_of_file ->
-        (if preserve_order then
-           for rank = 0 to nb_names - 1; do
-             try fprintf output "%s" (Ht.find rank2mol rank)
-             with Not_found -> Log.error "mol at rank %d not found" rank
-           done;
-         Printf.eprintf "found %d\n" !count)
-    )
+        let m = DB.find db name in
+        printf "%s" m
+      with Not_found ->
+        Log.warn "not found: %s" name
+    ) names;
+  DB.close db
 
 let () = main ()
