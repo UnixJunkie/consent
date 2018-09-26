@@ -48,3 +48,6 @@ let get_inchikey (mol: t): string =
     BatString.sub mol j (k - j)
   with Not_found ->
     failwith ("Sdf.get_inchikey: no inchikey for: " ^ mol)
+
+let get_fst_line m =
+  fst (BatString.split m ~by:"\n")
