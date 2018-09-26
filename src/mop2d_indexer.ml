@@ -3,6 +3,7 @@
    a database of molecules (a big .mol2 file) *)
 
 open Printf
+open Lbvs_consent
 
 module Cons = Consent
 module L = MyList

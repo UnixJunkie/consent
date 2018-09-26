@@ -1,4 +1,5 @@
-
+open Lbvs_consent
+  
 let main () =
   Log.set_log_level Log.INFO;
   Log.set_output stderr;

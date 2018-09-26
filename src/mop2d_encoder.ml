@@ -2,6 +2,7 @@
 (* read a mol2 file and output its MOP2D unfolded fingerprint *)
 
 open Printf
+open Lbvs_consent
 
 module Cons = Consent
 module Fp = Fingerprint

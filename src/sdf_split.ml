@@ -3,6 +3,7 @@
    in each *)
 
 open Printf
+open Lbvs_consent
 
 let get_mol_reader fn =
   if BatString.ends_with fn ".sdf" then

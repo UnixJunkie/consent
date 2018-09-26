@@ -4,6 +4,7 @@
    but oppo will only be allowed to screen a random half split of the DB *)
 
 open Printf
+open Lbvs_consent
 
 module Cons = Consent
 module L = MyList

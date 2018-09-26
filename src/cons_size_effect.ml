@@ -1,6 +1,7 @@
 (* test effect of consensus size on AUC and power metric at 1% *)
 
 open Printf
+open Lbvs_consent
 
 module Cons = Consent
 module L = MyList
