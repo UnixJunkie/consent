@@ -15,11 +15,11 @@ obmaccs:
 	cd src; make
 
 install:
-	opam remove lbvs_consent
-	opam pin -y add lbvs_consent ${PWD}
+	jbuilder build @install
+	jbuilder install
 
 uninstall:
-	opam remove lbvs_consent
+	jbuilder uninstall
 
 reinstall: uninstall install
 
