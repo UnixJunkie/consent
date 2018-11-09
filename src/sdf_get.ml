@@ -1,5 +1,4 @@
-
-(* extract SDF molecules with given names *)
+(* extract molecules with given names from a MOL2 or SDF file *)
 
 open Printf
 open Lbvs_consent
@@ -12,6 +11,12 @@ let db_name_of fn =
 type mol_name_provider = On_cli of string
                        | From_file of string
 
+let mol_reader_for_file fn =
+  match Filename.extension fn with
+  | ".mol2" -> (Mol2.read_one_raw, Mol2.get_name)
+  | ".sdf" -> (Sdf.read_one, Sdf.get_fst_line)
+  | ext -> failwith ("Sdf_get: not mol2 or sdf: " ^ fn)
+
 let main () =
   Log.set_log_level Log.INFO;
   Log.set_output stderr;
@@ -19,11 +24,12 @@ let main () =
   let argc, args = CLI.init () in
   if argc = 1 then
     (eprintf "usage:\n\
-              %s -i molecules.sdf \
+              %s -i molecules.{sdf|mol2} \
               {-names \"mol1,mol2,...\"|-f names_file}\n"
        Sys.argv.(0);
      exit 1);
   let input_fn = CLI.get_string ["-i"] args in
+  let read_one_mol, read_mol_name = mol_reader_for_file input_fn in
   let names_provider =
     match CLI.get_string_opt ["-names"] args with
     | Some names -> On_cli names
@@ -44,8 +50,8 @@ let main () =
     MyUtils.with_in_file input_fn (fun input ->
         try
           while true do
-            let m = Sdf.read_one input in
-            let name = Sdf.get_fst_line m in
+            let m = read_one_mol input in
+            let name = read_mol_name m in
             DB.add db name m;
             incr count;
             if (!count mod 10_000) = 0 then
