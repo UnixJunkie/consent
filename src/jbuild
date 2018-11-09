@@ -99,4 +99,4 @@
  ((names   (sdf_get))
   (public_names (lbvs_consent_sdf_get))
   (modules (sdf_get))
-  (libraries (lbvs_consent batteries dolog bitv parmap str zip minivpt cpm dokeysto_camltc))))
+  (libraries (lbvs_consent batteries dolog bitv parmap str zip minivpt cpm dokeysto_camltc minicli))))
