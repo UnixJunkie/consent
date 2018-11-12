@@ -3,6 +3,6 @@
 let read_one (input: in_channel): string =
   input_line input
 
-let get_name mol_lines =
-  let _miles, name = S.split mol_lines ~by:"\t" in
+let get_name smiles_line =
+  let _smiles, name = BatString.split smiles_line ~by:"\t" in
   name

@@ -15,6 +15,7 @@ let mol_reader_for_file fn =
   match Filename.extension fn with
   | ".mol2" -> (Mol2.read_one_raw, Mol2.get_name)
   | ".sdf" -> (Sdf.read_one, Sdf.get_fst_line)
+  | ".smi" -> (Smi.read_one, Smi.get_name)
   | ext -> failwith ("Sdf_get: not mol2 or sdf: " ^ fn)
 
 let main () =
@@ -24,7 +25,7 @@ let main () =
   let argc, args = CLI.init () in
   if argc = 1 then
     (eprintf "usage:\n\
-              %s -i molecules.{sdf|mol2} \
+              %s -i molecules.{sdf|mol2|smi} \
               {-names \"mol1,mol2,...\"|-f names_file}\n"
        Sys.argv.(0);
      exit 1);
