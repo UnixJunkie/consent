@@ -76,7 +76,7 @@ let median (l: int list): float =
 let nmedian (l: int list list): float list =
   match l with
   | [] -> assert(false)
-  | x :: xs ->
+  | _ ->
     let arrays = map Array.of_list l in
     let n = Array.length (hd arrays) in
     assert(for_all (fun a -> Array.length a = n) arrays);
@@ -106,7 +106,7 @@ let nfmedian (l: float list list): float list =
   in
   match l with
   | [] -> assert(false)
-  | x :: xs ->
+  | x :: _ ->
     let n = length x in
     assert(for_all (fun y -> n = length y) l);
     loop [] l

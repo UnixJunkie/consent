@@ -194,7 +194,7 @@ let is_accum_activity_curve: curve -> bool = function
    to retrieve the top scoring molecules *)
 let get_score_labels (curves: curve list) =
   match List.filter is_accum_activity_curve curves with
-  | [Accum_activity (cid, score_labels, molecules)] -> Some score_labels
+  | [Accum_activity (_cid, score_labels, _molecules)] -> Some score_labels
   | _ -> None
 
 (* test if two curves are similar <=> same type and consensus id *)
@@ -350,7 +350,7 @@ let fast_oppo_scorer
   tap_fun cand;
   let cand_name = Mol.get_name cand in
   let cand_fp = Mol.get_fp cand in
-  let nearest_tdist, nearest_fp =
+  let nearest_tdist, _nearest_fp =
     Vpt.nearest_neighbor cand_fp vpt in
   let score = 1.0 -. nearest_tdist in
   let label = Mol.is_active cand in
@@ -368,14 +368,13 @@ let cons_scorer (score_fun: Fp.t -> float) (tap_fun: Mol.t -> unit) (cand: Mol.t
 (* give a score to each candidate molecule given a consensus query *)
 let compute_score_labels
     (candidates': Mol.t list)
-    (all_actives: Mol.t list)
     (name2cluster: (string, int) Hashtbl.t)
     (cons_q: Cons.t): Score_label.t list =
   let candidates = remove_queries_from_database cons_q candidates' in
   let score_fun: (Mol.t -> Score_label.t) =
     match cons_q with
     | Cons.Single _ -> assert(false)
-    | Cons.Opportunist (queries, fprints) ->
+    | Cons.Opportunist (_queries, fprints) ->
       if !Flags.fast_oppo_score then
         (Log.info "fast oppo score";
          fast_oppo_scorer ignore (index_queries fprints))
@@ -416,7 +415,7 @@ let query
     let cstr = Cons.to_string cons_q in
     let csize = Cons.size cons_q in
     let cons_id = sprintf "%s.%03d" cstr csize in
-    let score_labels = compute_score_labels candidates' all_actives name2cluster cons_q in
+    let score_labels = compute_score_labels candidates' name2cluster cons_q in
     let auc, cum_curve = ROC.auc score_labels in
     (* 10% is for NRLIST, for VUQSAR we need much less *)
     let pm = ROC.power_metric 0.1 score_labels in
@@ -471,7 +470,7 @@ let pcons_query
   begin
     if nprocs > 1 || not (BatString.ends_with database_fn ".bin") then
       let mol_reader =
-        Mol.mol_reader_of_filename_fp !Flags.curr_fingerprint database_fn in
+        Mol.mol_reader_of_filename_fp !Flags.curr_fingerprint in
       Log.warn "sorted scores (will not run in constant memory)";
       let score_labels =
         Utls.parmap_on_file nprocs database_fn score_molecule mol_reader in

@@ -123,7 +123,7 @@ let skip_blocks nb read_one input =
   if nb = 0 then ()
   else
     let () = assert(nb > 0) in
-    for i = 1 to nb do
+    for _ = 1 to nb do
       ignore(read_one input)
     done
 

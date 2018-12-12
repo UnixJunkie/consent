@@ -165,7 +165,7 @@ let mol_reader_of_filename (fn: string) =
 
 (* given a filename, retrieves the function
    that can read one molecule at a time from it *)
-let mol_reader_of_filename_fp (fp: Flags.fingerprint) (fn: string) =
+let mol_reader_of_filename_fp (fp: Flags.fingerprint) =
   match fp with
   | Flags.MOP2D -> failwith "mol_reader_of_filename_fp: MOP2D unsupported"
   | Flags.MACCS ->

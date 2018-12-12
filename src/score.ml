@@ -106,17 +106,17 @@ let get_score (flag: Flags.score): (float array -> Fp.t -> float) =
   | Flags.Tanimoto -> tanimoto
   | Flags.Tversky alpha -> tversky alpha
 
-(* how much a query molecule agrees with the probabilistic consensus;
-   the larger the agreement, the better
-   WARNING: there is no data backing that this score is better (even for
-   Knowledgeable consensus) than Tanimoto *)
-let agreement (cons: float array) (cand: Fp.t): float =
-  let agreement_bits (cons: float array) (cand: Bitv.t): float =
-    assert(A.length cons = Bitv.length cand);
-    Bitv.foldi_left
-      (fun acc i bit ->
-         let p = A.unsafe_get cons i in
-         let delta = if bit then p else 1.0 -. p in
-         acc +. delta
-      ) 0.0 cand in
-  agreement_bits cons (Fp.get_bits cand)
+(* (\* how much a query molecule agrees with the probabilistic consensus;
+ *    the larger the agreement, the better
+ *    WARNING: there is no data backing that this score is better (even for
+ *    Knowledgeable consensus) than Tanimoto *\)
+ * let agreement (cons: float array) (cand: Fp.t): float =
+ *   let agreement_bits (cons: float array) (cand: Bitv.t): float =
+ *     assert(A.length cons = Bitv.length cand);
+ *     Bitv.foldi_left
+ *       (fun acc i bit ->
+ *          let p = A.unsafe_get cons i in
+ *          let delta = if bit then p else 1.0 -. p in
+ *          acc +. delta
+ *       ) 0.0 cand in
+ *   agreement_bits cons (Fp.get_bits cand) *)

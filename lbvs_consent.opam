@@ -1,5 +1,4 @@
 opam-version: "2.0"
-name: "consent"
 authors: "Francois Berenger"
 maintainer: "unixjunkie@sdf.org"
 homepage: "https://github.com/UnixJunkie/consent"
@@ -8,7 +7,7 @@ dev-repo: "git+https://github.com/UnixJunkie/consent.git"
 license: "GPL"
 build: [
   [make "obmaccs"]
-  ["jbuilder" "build" "-p" name "-j" jobs]
+  ["dune" "build" "-p" name "-j" jobs]
 ]
 install: [
   ["cp" "bin/lbvs_consent_ecfp4.py" "%{bin}%/lbvs_consent_ecfp4.py"]
@@ -29,4 +28,5 @@ depends: [
   "minivpt"
   "cpm"
   "dokeysto_camltc"
+  "minicli" {>= "5.0.0"}
 ]

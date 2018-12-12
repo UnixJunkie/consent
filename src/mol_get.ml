@@ -17,7 +17,7 @@ let mol_reader_for_file fn =
   | ".mol2" -> (Mol2.read_one_raw, Mol2.get_name)
   | ".sdf" -> (Sdf.read_one, Sdf.get_fst_line)
   | ".smi" -> (Smi.read_one, Smi.get_name)
-  | ext -> failwith ("Sdf_get: not mol2 or sdf: " ^ fn)
+  | _ -> failwith ("Sdf_get: not mol2 or sdf: " ^ fn)
 
 let main () =
   Log.set_log_level Log.INFO;

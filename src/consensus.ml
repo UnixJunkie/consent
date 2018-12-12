@@ -61,8 +61,8 @@ let to_policy: t -> Pol.t = function
 let to_string (cons: t): string =
   let pol_str = Pol.to_string (to_policy cons) in
   let fp_str = match cons with
-    | Single (mols, fprints)
-    | Opportunist (mols, fprints) -> Fp.identify (L.hd fprints)
+    | Single (_mols, fprints)
+    | Opportunist (_mols, fprints) -> Fp.identify (L.hd fprints)
     | Optimist_ecfp4 _
     | Realist_ecfp4 _
     | Knowledgeable_ecfp4 _ -> "ecfp4"

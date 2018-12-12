@@ -1,4 +1,3 @@
-open Printf
 
 module At = Atom
 module IntSet = BatSet.Int
@@ -34,14 +33,14 @@ let read_one (counter: int ref) (input: in_channel): Mini_mol.t =
   (* skip lines until we start to read atoms *)
   consume_until atoms_header input;
   (* read all atoms *)
-  for i = 1 to nb_atoms do
+  for _ = 1 to nb_atoms do
       let a = At.of_mol2_line (input_line input) in
       graph.(At.(a.idx)) <- Node.create At.(a.typ) IntSet.empty
   done;
   let line = input_line input in
   assert(line = bonds_header);
   (* read all bonds *)
-  for i = 1 to nb_bonds do
+  for _ = 1 to nb_bonds do
     let b = Bond.of_mol2_line (input_line input) in
     let src = Bond.(b.src) in
     let dst = Bond.(b.dst) in

@@ -29,9 +29,9 @@ let get_bits: t -> Bitv.t = function
 
 let get_ints: t -> IntSet.t = function
   | MOP2D ints -> ints
-  | MACCS bits -> failwith "Fp.get_ints: MACCS"
-  | PUBCH bits -> failwith "Fp.get_ints: PUBCH"
-  | ECFP4 bits -> failwith "Fp.get_ints: ECFP4"
+  | MACCS _bits -> failwith "Fp.get_ints: MACCS"
+  | PUBCH _bits -> failwith "Fp.get_ints: PUBCH"
+  | ECFP4 _bits -> failwith "Fp.get_ints: ECFP4"
 
 let count_set_bits: t -> int = function
   | MOP2D ints -> IntSet.cardinal ints
