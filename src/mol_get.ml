@@ -3,6 +3,7 @@
 open Printf
 open Lbvs_consent
 
+module CLI = Minicli.CLI
 module DB = Dokeysto_camltc.Db_camltc.RW
 
 let db_name_of fn =
