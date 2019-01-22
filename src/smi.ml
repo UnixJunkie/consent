@@ -5,4 +5,9 @@ let read_one (input: in_channel): string =
 
 let get_name smiles_line =
   let _smiles, name = BatString.split smiles_line ~by:"\t" in
-  name
+  (* all other file formats expect molecule name only,
+   * not molecule name followed by EOL *)
+  if BatString.ends_with name "\n" then
+    BatString.rchop ~n:1 name
+  else
+    name
