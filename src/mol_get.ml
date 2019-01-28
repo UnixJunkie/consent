@@ -6,6 +6,7 @@ open Lbvs_consent
 
 module CLI = Minicli.CLI
 module DB = Dokeysto_camltc.Db_camltc.RW
+module S = BatString
 
 let db_name_of fn =
   fn ^ ".db"
@@ -14,11 +15,10 @@ type mol_name_provider = On_cli of string
                        | From_file of string
 
 let mol_reader_for_file fn =
-  match Filename.extension fn with
-  | ".mol2" -> (Mol2.read_one_raw, Mol2.get_name)
-  | ".sdf" -> (Sdf.read_one, Sdf.get_fst_line)
-  | ".smi" -> (Smi.read_one, Smi.get_name)
-  | _ -> failwith ("Mol_get.mol_reader_for_file: not {.mol2|.sdf|.smi}: " ^ fn)
+  if S.ends_with fn ".mol2" then Mol2.(read_one_raw, get_name)
+  else if S.ends_with fn ".sdf" then Sdf.(read_one, get_fst_line)
+  else if S.ends_with fn ".smi" then Smi.(read_one, get_name)
+  else failwith ("Mol_get.mol_reader_for_file: not {.mol2|.sdf|.smi}: " ^ fn)
 
 let main () =
   let argc, args = CLI.init () in
