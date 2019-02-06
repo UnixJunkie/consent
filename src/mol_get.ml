@@ -25,7 +25,8 @@ let main () =
   if argc = 1 then
     (eprintf "usage:\n\
               %s -i molecules.{sdf|mol2|smi} \
-              {-names \"mol1,mol2,...\"|-f names_file} [-v]\n"
+              {-names \"mol1,mol2,...\"|-f names_file} [-v] [--force]\n\
+              [--force]: overwrite existing db file, if any\n"
        Sys.argv.(0);
      exit 1);
   let verbose = CLI.get_set_bool ["-v"] args in
@@ -33,6 +34,7 @@ let main () =
   Log.set_output stderr;
   Log.color_on ();
   let input_fn = CLI.get_string ["-i"] args in
+  let force_db_creation = CLI.get_set_bool ["--force"] args in
   let read_one_mol, read_mol_name = mol_reader_for_file input_fn in
   let names_provider =
     match CLI.get_string_opt ["-names"] args with
@@ -43,12 +45,12 @@ let main () =
   (* is there a DB already? *)
   let db_fn = db_name_of input_fn in
   let db_exists, db =
-    if Sys.file_exists db_fn then
-      let () = Log.info "opening %s" db_fn in
-      (true, DB.open_existing db_fn)
-    else
+    if force_db_creation || not (Sys.file_exists db_fn) then
       let () = Log.info "creating %s" db_fn in
-      (false, DB.create db_fn) in
+      (false, DB.create db_fn)
+    else
+      let () = Log.warn "reusing %s" db_fn in
+      (true, DB.open_existing db_fn) in
   if verbose then
     DB.iter (fun k v ->
         Log.debug "k: %s v: %s" k v
