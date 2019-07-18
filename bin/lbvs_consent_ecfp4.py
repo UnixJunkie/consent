@@ -6,13 +6,13 @@ from __future__ import print_function
 
 import sys
 
+import rdkit
 from rdkit import Chem
 from rdkit.Chem import AllChem
 
 # In ECFP4, 4 stands for the diameter of the atom environment
-fp_diameter = 4
 # but rdkit wants a radius
-fp_radius = fp_diameter / 2
+radius = 2
 
 def RobustSmilesMolSupplier(filename):
     with open(filename) as f:
@@ -54,11 +54,11 @@ mol_reader = get_mol_reader(sys.argv[1])
 i = 0
 # print("#mol_name,IC50 in mol/L (0.0 means unknown),ECFP4 bitstring");
 for mol, mol_name in mol_reader:
-    try:
-        # nBits=2048 is the default ECFP4 length in rdkit
-        fp = AllChem.GetMorganFingerprintAsBitVect(mol, fp_radius).ToBitString()
-        print("%s,0.0,%s" % (mol_name, fp))
-    except:
-        print("%s: error: molecule at index %d" % (sys.argv[0], i),
-              file=sys.stderr)
-    i = i + 1
+    # try:
+    # nBits=2048 is the default ECFP4 length in rdkit
+    fp = AllChem.GetMorganFingerprintAsBitVect(mol, radius)
+    print("%s,0.0,%s" % (mol_name, fp.ToBitString()))
+    # except:
+    #     print("%s: error: molecule at index %d" % (sys.argv[0], i),
+    #           file=sys.stderr)
+    # i = i + 1
