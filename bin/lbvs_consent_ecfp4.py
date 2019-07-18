@@ -2,17 +2,11 @@
 
 # get the ECFP4 bitstring for each molecule in input file; using rdkit's python bindings
 
-from __future__ import print_function
-
 import sys
 
 import rdkit
 from rdkit import Chem
 from rdkit.Chem import AllChem
-
-# In ECFP4, 4 stands for the diameter of the atom environment
-# but rdkit wants a radius
-radius = 2
 
 def RobustSmilesMolSupplier(filename):
     with open(filename) as f:
@@ -43,22 +37,40 @@ def get_mol_reader(filename):
               file=sys.stderr)
         exit(1)
 
-argc = len(sys.argv)
-if argc != 2:
-    #                    0  1
-    print("fatal: usage: %s filename.{smi|sdf}" % sys.argv[0],
-          file=sys.stderr)
-    exit(1)
+def string_of_bitstring(sparse, fp):
+    bitstring = fp.ToBitString()
+    if not sparse:
+        return bitstring
+    else:
+        lst = ['[']
+        not_started = True
+        for i, c in enumerate(bitstring):
+            if c == '1':
+                if not_started:
+                    lst.append(str(i))
+                    lst.append(':1')
+                else:
+                    lst.append(';')
+                    lst.append(str(i))
+                    lst.append(':1')
+                not_started = False
+        lst.append(']')
+        return "".join(lst)
 
-mol_reader = get_mol_reader(sys.argv[1])
-i = 0
-# print("#mol_name,IC50 in mol/L (0.0 means unknown),ECFP4 bitstring");
-for mol, mol_name in mol_reader:
-    # try:
-    # nBits=2048 is the default ECFP4 length in rdkit
-    fp = AllChem.GetMorganFingerprintAsBitVect(mol, radius)
-    print("%s,0.0,%s" % (mol_name, fp.ToBitString()))
-    # except:
-    #     print("%s: error: molecule at index %d" % (sys.argv[0], i),
-    #           file=sys.stderr)
-    # i = i + 1
+if __name__ == '__main__':
+    argc = len(sys.argv)
+    if argc != 2 and argc != 3:
+        #                    0  1                  2
+        print("fatal: usage: %s filename.{smi|sdf} [--sparse]" % sys.argv[0],
+              file=sys.stderr)
+        exit(1)
+    mol_reader = get_mol_reader(sys.argv[1])
+    sparse_format = (argc == 3) and (sys.argv[2] == '--sparse')
+    # In ECFP4, 4 is a diameter but rdkit wants a radius
+    fp_radius = 2
+    fp_length = 2048
+    for mol, mol_name in mol_reader:
+        fp = AllChem.GetMorganFingerprintAsBitVect(mol, fp_radius,
+                                                   nBits=fp_length)
+        bitstring = string_of_bitstring(sparse_format, fp)
+        print("%s,0.0,%s" % (mol_name, bitstring))
