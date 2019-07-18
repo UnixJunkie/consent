@@ -47,12 +47,9 @@ def string_of_bitstring(sparse, fp):
         for i, c in enumerate(bitstring):
             if c == '1':
                 if not_started:
-                    lst.append(str(i))
-                    lst.append(':1')
+                    lst.append('%d:1' % i)
                 else:
-                    lst.append(';')
-                    lst.append(str(i))
-                    lst.append(':1')
+                    lst.append(';%d:1' % i)
                 not_started = False
         lst.append(']')
         return "".join(lst)
