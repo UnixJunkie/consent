@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 
 # get the ECFP4 bitstring for each molecule in input file; using rdkit's python bindings
 
