@@ -6,6 +6,7 @@ open Lbvs_consent
 
 module CLI = Minicli.CLI
 module DB = Dokeysto_camltc.Db_camltc.RW
+module Log = Dolog.Log
 module S = BatString
 
 let db_name_of fn =

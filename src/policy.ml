@@ -2,7 +2,7 @@
 (* A consensus is parameterized by a policy/strategy that dictates how the
    consensus is built *)
 
-module Log = Log.Make(struct let section = "Poli" end)
+module Log = Dolog.Log.Make(struct let section = "Poli" end)
 
 type t =
   (* control strategies are not consensus queries per se *)

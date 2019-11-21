@@ -1,6 +1,6 @@
 open Printf
 
-module Log = Log.Make(struct let section = "Cons" end)
+module Log = Dolog.Log.Make(struct let section = "Cons" end)
 
 module Fp = Fingerprint
 module IntMap = BatMap.Int

@@ -8,6 +8,7 @@ module Cons = Consent
 module Fp = Fingerprint
 module IntSet = MyIntSet
 module L = MyList
+module Log = Dolog.Log
 module Mol = Molecule
 module Ht = BatHashtbl
 module StringSet = BatSet.String

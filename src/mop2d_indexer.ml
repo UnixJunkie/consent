@@ -7,6 +7,7 @@ open Lbvs_consent
 
 module Cons = Consent
 module L = MyList
+module Log = Dolog.Log
 module Mol = Molecule
 module Ht = BatHashtbl
 module StringSet = BatSet.String
@@ -38,7 +39,10 @@ let main () =
       with End_of_file ->
           let key_values = Ht.to_list ht in
           Log.info "read %d from %s" !counter !input_fn;
-          let sorted = L.sort (fun (_, v1) (_, v2) -> BatInt.compare v2 v1) key_values in
+          let sorted =
+            L.sort (fun (_, v1) (_, v2) ->
+                BatInt.compare v2 v1
+              ) key_values in
           L.iter (fun (k, v) ->
               printf "%s %d\n" (Mop2d_env.to_string k) v
             ) sorted
