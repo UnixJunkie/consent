@@ -29,18 +29,22 @@ depends: [
   "cpm"
   "dokeysto_camltc"
   "minicli" {>= "5.0.0"}
+  "conf-boost"
+  "conf-openbabel"
+  "conf-python-3"
+  "conf-rdkit"
 ]
 synopsis: "Chemoinformatics software for consensus fingerprint queries"
 description: """
-Ligand-Based Virtual Screening (LBVS) software to do similarity searches
-using consensus fingerprint queries.
+Chemoinformatics software to do similarity searches using consensus
+fingerprint queries.
 
-For more details, read the homepage on github:
+For more details, see the README on github:
 
 https://github.com/UnixJunkie/consent
 
 Please cite the corresponding paper in case you use this software
-and publish your results:
+and publish about your results:
 
 @article{Berenger2017,
   title={Consensus queries in ligand-based virtual screening experiments},
