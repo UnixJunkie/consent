@@ -55,7 +55,8 @@ and publish about your results:
   doi={10.1186/s13321-017-0248-5},
 }
 """
-# url {
-#   src: "https://github.com/UnixJunkie/consent/archive/XXX.tar.gz"
-#   checksum: "md5=YYY"
-# }
+#url {
+#  src: "https://github.com/UnixJunkie/consent/archive/vXXX.tar.gz"
+#  checksum: "md5=YYY"
+#}
+
