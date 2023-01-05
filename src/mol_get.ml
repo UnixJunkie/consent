@@ -5,7 +5,7 @@ open Printf
 open Lbvs_consent
 
 module CLI = Minicli.CLI
-module DB = Dokeysto_camltc.Db_camltc.RW
+module DB = Dokeysto.Db.RW
 module Log = Dolog.Log
 module S = BatString
 
