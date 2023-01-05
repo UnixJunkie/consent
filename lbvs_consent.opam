@@ -14,16 +14,17 @@ install: [
   ["cp" "src/lbvs_consent_ob_maccs" "%{bin}%/lbvs_consent_ob_maccs"]
 ]
 depends: [
+  "ocaml" {>= "5.0.0"}
   "dune" {>= "1.6"}
   "batteries"
   "bitv" {>= "1.2"}
-  "parmap"
+  "parmap" # FBR: replace by parany
   "dolog" {>= "4.0.0"}
   "camlzip"
   "qcheck"
-  "minivpt"
+  "vpt"
   "cpm"
-  "dokeysto_camltc"
+  "dokeysto"
   "minicli" {>= "5.0.0"}
   "conf-boost"
   "conf-openbabel"
