@@ -26,7 +26,7 @@ struct
   let dist = Score.fp_tanimoto_dist
 end
 
-module Vpt = Vp_tree.Make(Vpt_point)
+module Vpt = Vpt.Vp_tree.Make(Vpt_point)
 
 (* useful names to constants *)
 let output_all_scores = -1
@@ -341,7 +341,7 @@ let oppo_scorer
 
 let index_queries (fprints: Fp.t list): Vpt.t =
   assert(!Flags.curr_score = Flags.Tanimoto);
-  Vpt.create fprints
+  Vpt.(create Optimal fprints)
 
 let fast_oppo_scorer
     (tap_fun: Mol.t -> unit)
