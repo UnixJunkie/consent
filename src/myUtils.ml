@@ -75,17 +75,10 @@ let gzip_output_string (chan: Gzip.out_channel) (s: string): unit =
 
 (* to factorize code using parmap *)
 let list_parmap (ncores: int) (f: 'a -> 'b) (l: 'a list): 'b list =
-  if ncores > 1 then (* don't invoke parmap in vain *)
-    Parmap.parmap ~ncores ~chunksize:1 f (Parmap.L l)
-  else
-    L.map f l
+  Parany.Parmap.parmap ncores ~csize:1 f l
 
 let list_pariter (ncores: int) (f: 'a -> unit) (l: 'a list): unit =
-  if ncores > 1 then
-    (* don't invoke parmap in vain *)
-    Parmap.pariter ~ncores ~chunksize:1 f (Parmap.L l)
-  else
-    L.iter f l
+  Parany.Parmap.pariter ncores ~csize:1 f l
 
 let lines_of_file (fn: filename): string list =
   with_in_file fn (fun input ->
@@ -149,7 +142,7 @@ let parmap_on_file
          list_parmap ncores
            (fun _fake_line ->
               let input = open_in_bin fn in
-              let my_rank = Parmap.get_rank () in
+              let my_rank = Parany.get_rank () in
               assert(my_rank >= 0);
               let res = ref [] in
               try

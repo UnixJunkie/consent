@@ -18,7 +18,7 @@ depends: [
   "dune" {>= "1.6"}
   "batteries"
   "bitv" {>= "1.2"}
-  "parmap" # FBR: replace by parany in the near future
+  "parany" {>= "13.1.0"} # we need Parany.get_rank()
   "dolog" {>= "4.0.0"}
   "camlzip"
   "qcheck"
