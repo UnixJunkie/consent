@@ -16,14 +16,14 @@ install: [
 depends: [
   "ocaml" {>= "5.0.0"}
   "dune" {>= "1.6"}
-  "batteries"
+  "batteries" {>= "3.0.0"}
   "bitv" {>= "1.2"}
   "parany" {>= "13.1.0"} # we need Parany.get_rank()
   "dolog" {>= "4.0.0"}
   "camlzip"
   "qcheck"
   "vpt"
-  "cpm"
+  "cpm" {>= "4.0.0"}
   "dokeysto"
   "minicli" {>= "5.0.0"}
   "conf-boost"
