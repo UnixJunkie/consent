@@ -30,6 +30,7 @@ depends: [
   "conf-openbabel"
   "conf-python-3"
   "conf-rdkit"
+  "conf-pkg-config"
 ]
 synopsis: "Chemoinformatics software for consensus fingerprint queries"
 description: """
